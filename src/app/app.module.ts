@@ -10,13 +10,24 @@ import { RouterModule } from '@angular/router';
 import { InfoComponent } from './info/info.component';
 import { AvatarComponent } from './avatar/avatar.component';
 import { SecurityComponent } from './security/security.component';
+import { LoginGuard } from './login.guard';
+import { TimeGuard } from './time.guard';
 
 //聲明路由詞典--路由地址和路由組件的對應集合
 type PathMatch = "full" | "prefix" | undefined;
 const routes = [
   {path: '', component: IndexComponent},
   {path: 'index', component: IndexComponent},
-  {path: 'user/center', component: UserCenterComponent},
+  {path: 'user/center',
+   component: UserCenterComponent,
+   canActivate: [LoginGuard, TimeGuard],//路由守衛
+   children: [ //嵌套的二級路由
+    {path:'', component:InfoComponent},//已經進入，要給他預設要哪個功能
+    {path:'info', component:InfoComponent},
+    {path:'avatar', component:AvatarComponent},
+    {path:'security', component:SecurityComponent},
+   ]
+  },
   {path: '**', component: NotFoundComponent},
 ]
 
